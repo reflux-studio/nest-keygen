@@ -6,7 +6,7 @@
 
 [![npm version](https://img.shields.io/npm/v/nest-keygen.svg)](https://www.npmjs.com/package/nest-keygen)
 [![license](https://img.shields.io/npm/l/nest-keygen.svg)](./LICENSE)
-[![keygen API](https://img.shields.io/badge/keygen-API-4F46E5.svg)](https://keygen.sh/docs/api/)
+[![codecov](https://codecov.io/gh/reflux-studio/nest-keygen/graph/badge.svg?token=BS26AJJTVM)](https://codecov.io/gh/reflux-studio/nest-keygen)
 [![NestJS](https://img.shields.io/badge/NestJS-11-E0234E.svg)](https://nestjs.com)
 
 [English](./README.md) / 简体中文
