@@ -1,6 +1,6 @@
 {
   "name": "nest-keygen",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "NestJS bindings for the Keygen API",
   "author": "XavierSue",
   "license": "MIT",
@@ -19,7 +19,7 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs}/**/*.ts\" --fix",
-    "publish:npm": "pnpm build && pnpm publish"
+    "release": "pnpm build && pnpm publish"
   },
   "peerDependencies": {
     "@nestjs/axios": "^3.0.0 || ^4.0.0",
