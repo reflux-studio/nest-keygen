@@ -1,0 +1,1 @@
+export const KEYGEN_OPTIONS = 'KEYGEN_OPTIONS';
