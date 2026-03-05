@@ -4,8 +4,8 @@
 
 **[Keygen](https://keygen.sh) 软件许可 API 的 NestJS 绑定**
 
-[![npm version](https://img.shields.io/npm/v/nest-keygen.svg)](https://www.npmjs.com/package/nest-keygen)
-[![license](https://img.shields.io/npm/l/nest-keygen.svg)](./LICENSE)
+[![npm version](https://img.shields.io/npm/v/nest-keygen)](https://www.npmjs.com/package/nest-keygen)
+[![license](https://img.shields.io/npm/l/nest-keygen)](./LICENSE)
 [![codecov](https://codecov.io/gh/reflux-studio/nest-keygen/graph/badge.svg?token=BS26AJJTVM)](https://codecov.io/gh/reflux-studio/nest-keygen)
 [![NestJS](https://img.shields.io/badge/NestJS-11-E0234E.svg)](https://nestjs.com)
 
