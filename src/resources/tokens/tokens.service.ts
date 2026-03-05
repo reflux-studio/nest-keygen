@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { KeygenHttpService } from '../../common/keygen-http.service';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
 import {
   TokenResponse,
   TokenListResponse,
@@ -9,26 +10,45 @@ import {
 
 @Injectable()
 export class TokensService {
-  constructor(private readonly http: KeygenHttpService) {}
+  constructor(private readonly httpService: HttpService) {}
 
+  /** 用邮箱密码生成 user-token，POST /tokens，Basic 认证 */
   async generate(credentials: GenerateTokenInput): Promise<TokenResponse> {
     const auth = `Basic ${Buffer.from(`${credentials.email}:${credentials.password}`).toString('base64')}`;
-    return this.http.post<TokenResponse>('/tokens', undefined, undefined, auth);
+    const res = await firstValueFrom(
+      this.httpService.post<TokenResponse>('/tokens', undefined, {
+        headers: { Authorization: auth },
+      }),
+    );
+    return res.data;
   }
 
+  /** 列出当前 bearer 的 tokens */
   async list(params?: ListTokensParams): Promise<TokenListResponse> {
-    return this.http.get<TokenListResponse>('/tokens', params);
+    const res = await firstValueFrom(
+      this.httpService.get<TokenListResponse>('/tokens', { params }),
+    );
+    return res.data;
   }
 
+  /** 获取 token 详情 */
   async retrieve(tokenId: string): Promise<TokenResponse> {
-    return this.http.get<TokenResponse>(`/tokens/${tokenId}`);
+    const res = await firstValueFrom(
+      this.httpService.get<TokenResponse>(`/tokens/${tokenId}`),
+    );
+    return res.data;
   }
 
+  /** 轮换 token secret 并延长两周过期 */
   async regenerate(tokenId: string): Promise<TokenResponse> {
-    return this.http.put<TokenResponse>(`/tokens/${tokenId}`);
+    const res = await firstValueFrom(
+      this.httpService.put<TokenResponse>(`/tokens/${tokenId}`),
+    );
+    return res.data;
   }
 
+  /** 永久撤销 token */
   async revoke(tokenId: string): Promise<void> {
-    return this.http.delete(`/tokens/${tokenId}`);
+    await firstValueFrom(this.httpService.delete(`/tokens/${tokenId}`));
   }
 }

@@ -6,7 +6,6 @@
 
 [![npm version](https://img.shields.io/npm/v/nest-keygen)](https://www.npmjs.com/package/nest-keygen)
 [![license](https://img.shields.io/npm/l/nest-keygen)](./LICENSE)
-[![codecov](https://codecov.io/gh/reflux-studio/nest-keygen/graph/badge.svg?token=BS26AJJTVM)](https://codecov.io/gh/reflux-studio/nest-keygen)
 [![NestJS](https://img.shields.io/badge/NestJS-11-E0234E.svg)](https://nestjs.com)
 
 [English](./README.md) / 简体中文
@@ -52,18 +51,14 @@ import { KeygenModule } from 'nest-keygen';
 export class AppModule {}
 ```
 
-### 2. 异步配置（如结合 ConfigService）
+### 2. 使用环境变量
 
 ```typescript
-KeygenModule.forRootAsync({
+KeygenModule.forRoot({
+  account: process.env.KEYGEN_ACCOUNT!,
+  token: process.env.KEYGEN_TOKEN,
+  environment: process.env.KEYGEN_ENV,
   isGlobal: true,
-  imports: [ConfigModule],
-  useFactory: (config: ConfigService) => ({
-    account: config.get('KEYGEN_ACCOUNT'),
-    token: config.get('KEYGEN_TOKEN'),
-    environment: config.get('KEYGEN_ENV'), // 例如 'sandbox'
-  }),
-  inject: [ConfigService],
 })
 ```
 

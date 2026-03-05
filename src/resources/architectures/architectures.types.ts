@@ -4,8 +4,9 @@ import {
   JsonApiSingleResponse,
   JsonApiListResponse,
   ListQueryParams,
-} from '../../interfaces/common.types';
+} from '../../keygen.types';
 
+/** CPU 架构属性，由 releases/artifacts 自动填充，只读 */
 export interface ArchAttributes {
   name: string | null;
   key: string;

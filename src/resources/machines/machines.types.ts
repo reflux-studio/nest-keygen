@@ -4,8 +4,9 @@ import {
   JsonApiSingleResponse,
   JsonApiListResponse,
   ListQueryParams,
-} from '../../interfaces/common.types';
+} from '../../keygen.types';
 
+/** 机器属性，设备指纹、平台、心跳等 */
 export interface MachineAttributes {
   fingerprint: string;
   cores: number | null;

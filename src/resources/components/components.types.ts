@@ -4,8 +4,9 @@ import {
   JsonApiSingleResponse,
   JsonApiListResponse,
   ListQueryParams,
-} from '../../interfaces/common.types';
+} from '../../keygen.types';
 
+/** 硬件组件属性（CPU 序列号、主板 ID、MAC 等），用于防克隆 */
 export interface ComponentAttributes {
   fingerprint: string;
   name: string;

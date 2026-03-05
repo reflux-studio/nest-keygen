@@ -4,8 +4,9 @@ import {
   JsonApiSingleResponse,
   JsonApiListResponse,
   ListQueryParams,
-} from '../../interfaces/common.types';
+} from '../../keygen.types';
 
+/** Package 属性，用于将多个 release 分组（如 CLI、桌面应用、插件） */
 export interface PackageAttributes {
   name: string;
   key: string;

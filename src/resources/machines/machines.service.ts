@@ -1,5 +1,6 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { KeygenHttpService } from '../../common/keygen-http.service';
+import { firstValueFrom } from 'rxjs';
 import {
   MachineResponse,
   MachineListResponse,
@@ -11,8 +12,9 @@ import {
 
 @Injectable()
 export class MachinesService {
-  constructor(private readonly http: KeygenHttpService) {}
+  constructor(private readonly httpService: HttpService) {}
 
+  /** 激活机器，POST /machines，需关联 license */
   async activate(data: ActivateMachineData): Promise<MachineResponse> {
     const { licenseId, ownerId, groupId, ...attributes } = data;
     const relationships: Record<
@@ -27,58 +29,95 @@ export class MachinesService {
       relationships['group'] = { data: { type: 'groups', id: groupId } };
 
     const body = { data: { type: 'machines', attributes, relationships } };
-    return this.http.post<MachineResponse>('/machines', body);
+    const res = await firstValueFrom(
+      this.httpService.post<MachineResponse>('/machines', body),
+    );
+    return res.data;
   }
 
+  /** 获取机器详情 */
   async retrieve(machineId: string): Promise<MachineResponse> {
-    return this.http.get<MachineResponse>(`/machines/${machineId}`);
+    const res = await firstValueFrom(
+      this.httpService.get<MachineResponse>(`/machines/${machineId}`),
+    );
+    return res.data;
   }
 
+  /** 更新机器属性 */
   async update(
     machineId: string,
     data: UpdateMachineData,
   ): Promise<MachineResponse> {
     const body = { data: { type: 'machines', attributes: data } };
-    return this.http.patch<MachineResponse>(`/machines/${machineId}`, body);
+    const res = await firstValueFrom(
+      this.httpService.patch<MachineResponse>(`/machines/${machineId}`, body),
+    );
+    return res.data;
   }
 
+  /** 停用机器，永久删除 */
   async deactivate(machineId: string): Promise<void> {
-    return this.http.delete(`/machines/${machineId}`);
+    await firstValueFrom(this.httpService.delete(`/machines/${machineId}`));
   }
 
+  /** 列出机器，支持 license/product/user/group/fingerprint 过滤 */
   async list(params?: ListMachinesParams): Promise<MachineListResponse> {
-    return this.http.get<MachineListResponse>('/machines', params);
+    const res = await firstValueFrom(
+      this.httpService.get<MachineListResponse>(
+        '/machines',
+        params ? { params } : {},
+      ),
+    );
+    return res.data;
   }
 
+  /** 签出离线机器文件证书 */
   async checkOut(
     machineId: string,
     params?: CheckOutMachineParams,
   ): Promise<any> {
-    return this.http.post<any>(
-      `/machines/${machineId}/actions/check-out`,
-      params,
+    const res = await firstValueFrom(
+      this.httpService.post<any>(
+        `/machines/${machineId}/actions/check-out`,
+        params,
+      ),
     );
+    return res.data;
   }
 
+  /** 发送心跳，维持 lease */
   async ping(machineId: string): Promise<MachineResponse> {
-    return this.http.post<MachineResponse>(
-      `/machines/${machineId}/actions/ping`,
+    const res = await firstValueFrom(
+      this.httpService.post<MachineResponse>(
+        `/machines/${machineId}/actions/ping`,
+      ),
     );
+    return res.data;
   }
 
+  /** 重置心跳监控，不停止机器 */
   async reset(machineId: string): Promise<MachineResponse> {
-    return this.http.post<MachineResponse>(
-      `/machines/${machineId}/actions/reset`,
+    const res = await firstValueFrom(
+      this.httpService.post<MachineResponse>(
+        `/machines/${machineId}/actions/reset`,
+      ),
     );
+    return res.data;
   }
 
+  /** 更换机器所属用户 */
   async changeOwner(machineId: string, userId: string): Promise<void> {
     const body = { data: { type: 'users', id: userId } };
-    return this.http.put(`/machines/${machineId}/owner`, body);
+    await firstValueFrom(
+      this.httpService.put(`/machines/${machineId}/owner`, body),
+    );
   }
 
+  /** 更换机器的组 */
   async changeGroup(machineId: string, groupId: string | null): Promise<void> {
     const body = { data: groupId ? { type: 'groups', id: groupId } : null };
-    return this.http.put(`/machines/${machineId}/group`, body);
+    await firstValueFrom(
+      this.httpService.put(`/machines/${machineId}/group`, body),
+    );
   }
 }

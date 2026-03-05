@@ -4,8 +4,9 @@ import {
   JsonApiSingleResponse,
   JsonApiListResponse,
   ListQueryParams,
-} from '../../interfaces/common.types';
+} from '../../keygen.types';
 
+/** 权益属性，命名权限/功能开关，可挂到 policy/license/release */
 export interface EntitlementAttributes {
   name: string;
   code: string;

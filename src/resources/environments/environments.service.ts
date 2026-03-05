@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { KeygenHttpService } from '../../common/keygen-http.service';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
 import {
   EnvironmentResponse,
   EnvironmentListResponse,
@@ -11,8 +12,9 @@ import { TokenResponse } from '../tokens/tokens.types';
 
 @Injectable()
 export class EnvironmentsService {
-  constructor(private readonly http: KeygenHttpService) {}
+  constructor(private readonly httpService: HttpService) {}
 
+  /** 创建环境，ISOLATED 需至少嵌入一个 admin */
   async create(data: CreateEnvironmentData): Promise<EnvironmentResponse> {
     const { admins, ...attributes } = data;
     const body = {
@@ -22,37 +24,63 @@ export class EnvironmentsService {
         ...(admins ? { relationships: { admins: { data: admins } } } : {}),
       },
     };
-    return this.http.post<EnvironmentResponse>('/environments', body);
+    const res = await firstValueFrom(
+      this.httpService.post<EnvironmentResponse>('/environments', body),
+    );
+    return res.data;
   }
 
+  /** 获取环境详情（按 ID 或 code） */
   async retrieve(environmentId: string): Promise<EnvironmentResponse> {
-    return this.http.get<EnvironmentResponse>(`/environments/${environmentId}`);
+    const res = await firstValueFrom(
+      this.httpService.get<EnvironmentResponse>(
+        `/environments/${environmentId}`,
+      ),
+    );
+    return res.data;
   }
 
+  /** 更新环境 */
   async update(
     environmentId: string,
     data: UpdateEnvironmentData,
   ): Promise<EnvironmentResponse> {
     const body = { data: { type: 'environments', attributes: data } };
-    return this.http.patch<EnvironmentResponse>(
-      `/environments/${environmentId}`,
-      body,
+    const res = await firstValueFrom(
+      this.httpService.patch<EnvironmentResponse>(
+        `/environments/${environmentId}`,
+        body,
+      ),
+    );
+    return res.data;
+  }
+
+  /** 永久删除环境，资源将排队删除 */
+  async delete(environmentId: string): Promise<void> {
+    await firstValueFrom(
+      this.httpService.delete(`/environments/${environmentId}`),
     );
   }
 
-  async delete(environmentId: string): Promise<void> {
-    return this.http.delete(`/environments/${environmentId}`);
-  }
-
+  /** 列出环境，支持 limit/page */
   async list(
     params?: ListEnvironmentsParams,
   ): Promise<EnvironmentListResponse> {
-    return this.http.get<EnvironmentListResponse>('/environments', params);
+    const res = await firstValueFrom(
+      this.httpService.get<EnvironmentListResponse>('/environments', {
+        params,
+      }),
+    );
+    return res.data;
   }
 
+  /** 生成该环境的非过期 token，需带 Keygen-Environment header */
   async generateToken(environmentId: string): Promise<TokenResponse> {
-    return this.http.post<TokenResponse>(
-      `/environments/${environmentId}/tokens`,
+    const res = await firstValueFrom(
+      this.httpService.post<TokenResponse>(
+        `/environments/${environmentId}/tokens`,
+      ),
     );
+    return res.data;
   }
 }

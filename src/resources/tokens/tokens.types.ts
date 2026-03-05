@@ -4,8 +4,9 @@ import {
   JsonApiSingleResponse,
   JsonApiListResponse,
   ListQueryParams,
-} from '../../interfaces/common.types';
+} from '../../keygen.types';
 
+/** Token 属性，user-token 默认过期，env/product token 不过期 */
 export interface TokenAttributes {
   kind: string;
   token?: string;
@@ -28,6 +29,7 @@ export type TokenResource = JsonApiResource<
 export type TokenResponse = JsonApiSingleResponse<TokenResource>;
 export type TokenListResponse = JsonApiListResponse<TokenResource>;
 
+/** 用邮箱密码生成 user-token，raw token 仅返回一次 */
 export interface GenerateTokenInput {
   email: string;
   password: string;

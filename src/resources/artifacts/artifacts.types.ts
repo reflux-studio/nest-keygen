@@ -4,8 +4,9 @@ import {
   JsonApiSingleResponse,
   JsonApiListResponse,
   ListQueryParams,
-} from '../../interfaces/common.types';
+} from '../../keygen.types';
 
+/** 二进制文件属性（安装包、归档等） */
 export interface ArtifactAttributes {
   filename: string;
   filetype: string | null;
@@ -33,6 +34,7 @@ export type ArtifactResource = JsonApiResource<
 export type ArtifactResponse = JsonApiSingleResponse<ArtifactResource>;
 export type ArtifactListResponse = JsonApiListResponse<ArtifactResource>;
 
+/** 上传 artifact 所需数据，创建后返回 307 重定向到 S3 上传 URL */
 export interface UploadArtifactData {
   filename: string;
   releaseId: string;

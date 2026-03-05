@@ -4,8 +4,9 @@ import {
   JsonApiSingleResponse,
   JsonApiListResponse,
   ListQueryParams,
-} from '../../interfaces/common.types';
+} from '../../keygen.types';
 
+/** Release 属性，版本化发布，支持 channel、status、语义版本 */
 export interface ReleaseAttributes {
   name: string | null;
   version: string;

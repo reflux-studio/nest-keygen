@@ -1,15 +1,9 @@
 export { KeygenModule } from './keygen.module';
 export { KeygenService } from './keygen.service';
-export { KeygenHttpService } from './common/keygen-http.service';
 export { KEYGEN_OPTIONS } from './keygen.constants';
 
 export type {
   KeygenOptions,
-  KeygenAsyncOptions,
-  KeygenOptionsFactory,
-} from './interfaces/keygen-options.interface';
-
-export type {
   JsonApiRelationshipData,
   JsonApiRelationship,
   JsonApiResource,
@@ -19,7 +13,7 @@ export type {
   JsonApiErrorResponse,
   PageParams,
   ListQueryParams,
-} from './interfaces/common.types';
+} from './keygen.types';
 
 export type {
   TokenAttributes,
@@ -254,27 +248,3 @@ export type {
 export type { ProfileResponse } from './resources/profiles/profiles.types';
 
 export type { ForgotPasswordData } from './resources/passwords/passwords.types';
-
-export { TokensService } from './resources/tokens/tokens.service';
-export { EnvironmentsService } from './resources/environments/environments.service';
-export { ProductsService } from './resources/products/products.service';
-export { EntitlementsService } from './resources/entitlements/entitlements.service';
-export { PoliciesService } from './resources/policies/policies.service';
-export { GroupsService } from './resources/groups/groups.service';
-export { LicensesService } from './resources/licenses/licenses.service';
-export { MachinesService } from './resources/machines/machines.service';
-export { ComponentsService } from './resources/components/components.service';
-export { ProcessesService } from './resources/processes/processes.service';
-export { UsersService } from './resources/users/users.service';
-export { PackagesService } from './resources/packages/packages.service';
-export { ReleasesService } from './resources/releases/releases.service';
-export { ArtifactsService } from './resources/artifacts/artifacts.service';
-export { PlatformsService } from './resources/platforms/platforms.service';
-export { ArchitecturesService } from './resources/architectures/architectures.service';
-export { ChannelsService } from './resources/channels/channels.service';
-export { WebhookEndpointsService } from './resources/webhook-endpoints/webhook-endpoints.service';
-export { WebhookEventsService } from './resources/webhook-events/webhook-events.service';
-export { RequestLogsService } from './resources/request-logs/request-logs.service';
-export { EventLogsService } from './resources/event-logs/event-logs.service';
-export { ProfilesService } from './resources/profiles/profiles.service';
-export { PasswordsService } from './resources/passwords/passwords.service';

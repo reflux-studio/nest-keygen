@@ -1,12 +1,17 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { KeygenHttpService } from '../../common/keygen-http.service';
+import { firstValueFrom } from 'rxjs';
 import { ProfileResponse } from './profiles.types';
 
 @Injectable()
 export class ProfilesService {
-  constructor(private readonly http: KeygenHttpService) {}
+  constructor(private readonly httpService: HttpService) {}
 
+  /** 获取当前 token bearer 的用户信息 */
   async me(): Promise<ProfileResponse> {
-    return this.http.get<ProfileResponse>('/me');
+    const res = await firstValueFrom(
+      this.httpService.get<ProfileResponse>('/me'),
+    );
+    return res.data;
   }
 }

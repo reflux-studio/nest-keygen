@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { KeygenHttpService } from './common/keygen-http.service';
+import { HttpException, Inject, Injectable } from '@nestjs/common';
+import { KEYGEN_OPTIONS } from './keygen.constants';
+import type { KeygenOptions } from './keygen.types';
 import { TokensService } from './resources/tokens/tokens.service';
 import { EnvironmentsService } from './resources/environments/environments.service';
 import { ProductsService } from './resources/products/products.service';
@@ -50,10 +51,20 @@ export class KeygenService {
     readonly eventLogs: EventLogsService,
     readonly profiles: ProfilesService,
     readonly passwords: PasswordsService,
-    private readonly http: KeygenHttpService,
+    @Inject(KEYGEN_OPTIONS) private readonly options: KeygenOptions,
   ) {}
 
+  /** 检测 Keygen 服务可达性，GET /v1/ping，成功返回 200 */
   async ping(): Promise<void> {
-    return this.http.ping();
+    const baseUrl = this.options.baseUrl ?? 'https://api.keygen.sh';
+    try {
+      const { default: axios } = await import('axios');
+      const res = await axios.get(`${baseUrl}/v1/ping`);
+      if (res.status < 200 || res.status >= 300)
+        throw new HttpException('Keygen API unreachable', res.status);
+    } catch (e: any) {
+      if (e instanceof HttpException) throw e;
+      throw new HttpException('Keygen API unreachable', 503);
+    }
   }
 }

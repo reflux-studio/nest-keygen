@@ -1,5 +1,6 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { KeygenHttpService } from '../../common/keygen-http.service';
+import { firstValueFrom } from 'rxjs';
 import {
   ReleaseResponse,
   ReleaseListResponse,
@@ -10,12 +11,13 @@ import {
   ListReleasesParams,
 } from './releases.types';
 import { ArtifactListResponse } from '../artifacts/artifacts.types';
-import { ListQueryParams } from '../../interfaces/common.types';
+import { ListQueryParams } from '../../keygen.types';
 
 @Injectable()
 export class ReleasesService {
-  constructor(private readonly http: KeygenHttpService) {}
+  constructor(private readonly httpService: HttpService) {}
 
+  /** 创建 release，初始为 DRAFT，需先上传 artifacts 再 publish */
   async create(data: CreateReleaseData): Promise<ReleaseResponse> {
     const { productId, packageId, ...attributes } = data;
     const relationships: Record<
@@ -29,45 +31,77 @@ export class ReleasesService {
     }
 
     const body = { data: { type: 'releases', attributes, relationships } };
-    return this.http.post<ReleaseResponse>('/releases', body);
+    const res = await firstValueFrom(
+      this.httpService.post<ReleaseResponse>('/releases', body),
+    );
+    return res.data;
   }
 
+  /** 获取 release 详情（按 ID、version 或 tag） */
   async retrieve(releaseId: string): Promise<ReleaseResponse> {
-    return this.http.get<ReleaseResponse>(`/releases/${releaseId}`);
+    const res = await firstValueFrom(
+      this.httpService.get<ReleaseResponse>(`/releases/${releaseId}`),
+    );
+    return res.data;
   }
 
+  /** 更新 release */
   async update(
     releaseId: string,
     data: UpdateReleaseData,
   ): Promise<ReleaseResponse> {
     const body = { data: { type: 'releases', attributes: data } };
-    return this.http.patch<ReleaseResponse>(`/releases/${releaseId}`, body);
+    const res = await firstValueFrom(
+      this.httpService.patch<ReleaseResponse>(`/releases/${releaseId}`, body),
+    );
+    return res.data;
   }
 
+  /** 永久删除 release */
   async delete(releaseId: string): Promise<void> {
-    return this.http.delete(`/releases/${releaseId}`);
+    await firstValueFrom(this.httpService.delete(`/releases/${releaseId}`));
   }
 
+  /** 列出 releases，支持 product/package/engine/channel/status 过滤 */
   async list(params?: ListReleasesParams): Promise<ReleaseListResponse> {
-    return this.http.get<ReleaseListResponse>('/releases', params);
+    const res = await firstValueFrom(
+      this.httpService.get<ReleaseListResponse>(
+        '/releases',
+        params ? { params } : {},
+      ),
+    );
+    return res.data;
   }
 
+  /** 获取 channel 内符合语义版本的最新可升级 release */
   async upgrade(releaseId: string): Promise<ReleaseResponse> {
-    return this.http.get<ReleaseResponse>(`/releases/${releaseId}/upgrade`);
+    const res = await firstValueFrom(
+      this.httpService.get<ReleaseResponse>(`/releases/${releaseId}/upgrade`),
+    );
+    return res.data;
   }
 
+  /** 发布 DRAFT release */
   async publish(releaseId: string): Promise<ReleaseResponse> {
-    return this.http.post<ReleaseResponse>(
-      `/releases/${releaseId}/actions/publish`,
+    const res = await firstValueFrom(
+      this.httpService.post<ReleaseResponse>(
+        `/releases/${releaseId}/actions/publish`,
+      ),
     );
+    return res.data;
   }
 
+  /** 下架已发布的 release，可重新 publish */
   async yank(releaseId: string): Promise<ReleaseResponse> {
-    return this.http.post<ReleaseResponse>(
-      `/releases/${releaseId}/actions/yank`,
+    const res = await firstValueFrom(
+      this.httpService.post<ReleaseResponse>(
+        `/releases/${releaseId}/actions/yank`,
+      ),
     );
+    return res.data;
   }
 
+  /** 附加 entitlement 约束，下载需满足所有约束 */
   async attachConstraints(
     releaseId: string,
     data: AttachConstraintsData,
@@ -78,9 +112,12 @@ export class ReleasesService {
         relationships: { entitlement: { data: { type: 'entitlements', id } } },
       })),
     };
-    return this.http.post(`/releases/${releaseId}/constraints`, body);
+    await firstValueFrom(
+      this.httpService.post(`/releases/${releaseId}/constraints`, body),
+    );
   }
 
+  /** 移除 entitlement 约束 */
   async detachConstraints(
     releaseId: string,
     data: DetachConstraintsData,
@@ -88,26 +125,42 @@ export class ReleasesService {
     const body = {
       data: data.constraintIds.map((id) => ({ type: 'constraints', id })),
     };
-    return this.http.delete(`/releases/${releaseId}/constraints`, body);
+    await firstValueFrom(
+      this.httpService.delete(`/releases/${releaseId}/constraints`, {
+        data: body,
+      }),
+    );
   }
 
+  /** 列出 release 的约束 */
   async listConstraints(
     releaseId: string,
     params?: ListQueryParams,
   ): Promise<any> {
-    return this.http.get<any>(`/releases/${releaseId}/constraints`, params);
+    const res = await firstValueFrom(
+      this.httpService.get<any>(
+        `/releases/${releaseId}/constraints`,
+        params ? { params } : {},
+      ),
+    );
+    return res.data;
   }
 
+  /** 列出 release 的 artifacts */
   async listArtifacts(
     releaseId: string,
     params?: ListQueryParams,
   ): Promise<ArtifactListResponse> {
-    return this.http.get<ArtifactListResponse>(
-      `/releases/${releaseId}/artifacts`,
-      params,
+    const res = await firstValueFrom(
+      this.httpService.get<ArtifactListResponse>(
+        `/releases/${releaseId}/artifacts`,
+        params ? { params } : {},
+      ),
     );
+    return res.data;
   }
 
+  /** 更换 release 关联的 package（同 product） */
   async changePackage(
     releaseId: string,
     packageId: string | null,
@@ -115,6 +168,8 @@ export class ReleasesService {
     const body = {
       data: packageId ? { type: 'packages', id: packageId } : null,
     };
-    return this.http.put(`/releases/${releaseId}/package`, body);
+    await firstValueFrom(
+      this.httpService.put(`/releases/${releaseId}/package`, body),
+    );
   }
 }

@@ -4,8 +4,9 @@ import {
   JsonApiSingleResponse,
   JsonApiListResponse,
   ListQueryParams,
-} from '../../interfaces/common.types';
+} from '../../keygen.types';
 
+/** 事件日志属性，记录 license 验证、更新等操作 */
 export interface EventLogAttributes {
   event: string;
   metadata: Record<string, any>;

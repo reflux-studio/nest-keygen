@@ -4,8 +4,9 @@ import {
   JsonApiSingleResponse,
   JsonApiListResponse,
   ListQueryParams,
-} from '../../interfaces/common.types';
+} from '../../keygen.types';
 
+/** 平台属性，由 releases/artifacts 自动填充，只读，如 macOS/Windows/Linux */
 export interface PlatformAttributes {
   name: string | null;
   key: string;

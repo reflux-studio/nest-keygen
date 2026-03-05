@@ -1,5 +1,6 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { KeygenHttpService } from '../../common/keygen-http.service';
+import { firstValueFrom } from 'rxjs';
 import {
   WebhookEndpointResponse,
   WebhookEndpointListResponse,
@@ -10,8 +11,9 @@ import {
 
 @Injectable()
 export class WebhookEndpointsService {
-  constructor(private readonly http: KeygenHttpService) {}
+  constructor(private readonly httpService: HttpService) {}
 
+  /** 创建 webhook 端点，接收 license.created 等异步事件 */
   async create(
     data: CreateWebhookEndpointData,
   ): Promise<WebhookEndpointResponse> {
@@ -29,36 +31,57 @@ export class WebhookEndpointsService {
           : {}),
       },
     };
-    return this.http.post<WebhookEndpointResponse>('/webhook-endpoints', body);
-  }
-
-  async retrieve(endpointId: string): Promise<WebhookEndpointResponse> {
-    return this.http.get<WebhookEndpointResponse>(
-      `/webhook-endpoints/${endpointId}`,
+    const res = await firstValueFrom(
+      this.httpService.post<WebhookEndpointResponse>(
+        '/webhook-endpoints',
+        body,
+      ),
     );
+    return res.data;
   }
 
+  /** 获取 webhook 端点详情 */
+  async retrieve(endpointId: string): Promise<WebhookEndpointResponse> {
+    const res = await firstValueFrom(
+      this.httpService.get<WebhookEndpointResponse>(
+        `/webhook-endpoints/${endpointId}`,
+      ),
+    );
+    return res.data;
+  }
+
+  /** 更新 webhook 端点 */
   async update(
     endpointId: string,
     data: UpdateWebhookEndpointData,
   ): Promise<WebhookEndpointResponse> {
     const body = { data: { type: 'webhook-endpoints', attributes: data } };
-    return this.http.patch<WebhookEndpointResponse>(
-      `/webhook-endpoints/${endpointId}`,
-      body,
+    const res = await firstValueFrom(
+      this.httpService.patch<WebhookEndpointResponse>(
+        `/webhook-endpoints/${endpointId}`,
+        body,
+      ),
+    );
+    return res.data;
+  }
+
+  /** 永久删除 webhook 端点 */
+  async delete(endpointId: string): Promise<void> {
+    await firstValueFrom(
+      this.httpService.delete(`/webhook-endpoints/${endpointId}`),
     );
   }
 
-  async delete(endpointId: string): Promise<void> {
-    return this.http.delete(`/webhook-endpoints/${endpointId}`);
-  }
-
+  /** 列出 webhook 端点 */
   async list(
     params?: ListWebhookEndpointsParams,
   ): Promise<WebhookEndpointListResponse> {
-    return this.http.get<WebhookEndpointListResponse>(
-      '/webhook-endpoints',
-      params,
+    const res = await firstValueFrom(
+      this.httpService.get<WebhookEndpointListResponse>(
+        '/webhook-endpoints',
+        params ? { params } : {},
+      ),
     );
+    return res.data;
   }
 }

@@ -4,8 +4,9 @@ import {
   JsonApiSingleResponse,
   JsonApiListResponse,
   ListQueryParams,
-} from '../../interfaces/common.types';
+} from '../../keygen.types';
 
+/** 组属性，用于团队许可，可限制 maxUsers/maxLicenses/maxMachines */
 export interface GroupAttributes {
   name: string;
   maxUsers: number | null;

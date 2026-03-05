@@ -1,5 +1,6 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { KeygenHttpService } from '../../common/keygen-http.service';
+import { firstValueFrom } from 'rxjs';
 import {
   UserResponse,
   UserListResponse,
@@ -11,8 +12,9 @@ import {
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly http: KeygenHttpService) {}
+  constructor(private readonly httpService: HttpService) {}
 
+  /** 创建用户，anon 可自注册（若账户未 protected） */
   async create(data: CreateUserData): Promise<UserResponse> {
     const { groupId, ...attributes } = data;
     const body = {
@@ -28,44 +30,75 @@ export class UsersService {
           : {}),
       },
     };
-    return this.http.post<UserResponse>('/users', body);
+    const res = await firstValueFrom(
+      this.httpService.post<UserResponse>('/users', body),
+    );
+    return res.data;
   }
 
+  /** 获取用户详情 */
   async retrieve(userId: string): Promise<UserResponse> {
-    return this.http.get<UserResponse>(`/users/${userId}`);
+    const res = await firstValueFrom(
+      this.httpService.get<UserResponse>(`/users/${userId}`),
+    );
+    return res.data;
   }
 
+  /** 更新用户 */
   async update(userId: string, data: UpdateUserData): Promise<UserResponse> {
     const body = { data: { type: 'users', attributes: data } };
-    return this.http.patch<UserResponse>(`/users/${userId}`, body);
+    const res = await firstValueFrom(
+      this.httpService.patch<UserResponse>(`/users/${userId}`, body),
+    );
+    return res.data;
   }
 
+  /** 永久删除用户 */
   async delete(userId: string): Promise<void> {
-    return this.http.delete(`/users/${userId}`);
+    await firstValueFrom(this.httpService.delete(`/users/${userId}`));
   }
 
+  /** 列出用户，支持 product/group/status 过滤 */
   async list(params?: ListUsersParams): Promise<UserListResponse> {
-    return this.http.get<UserListResponse>('/users', params);
+    const res = await firstValueFrom(
+      this.httpService.get<UserListResponse>(
+        '/users',
+        params ? { params } : {},
+      ),
+    );
+    return res.data;
   }
 
+  /** 更新用户密码 */
   async updatePassword(
     userId: string,
     data: UpdatePasswordData,
   ): Promise<void> {
     const body = { data: { type: 'users', attributes: data } };
-    return this.http.put(`/users/${userId}/password`, body);
+    await firstValueFrom(
+      this.httpService.put(`/users/${userId}/password`, body),
+    );
   }
 
+  /** 封禁用户 */
   async ban(userId: string): Promise<UserResponse> {
-    return this.http.post<UserResponse>(`/users/${userId}/actions/ban`);
+    const res = await firstValueFrom(
+      this.httpService.post<UserResponse>(`/users/${userId}/actions/ban`),
+    );
+    return res.data;
   }
 
+  /** 解封用户 */
   async unban(userId: string): Promise<UserResponse> {
-    return this.http.post<UserResponse>(`/users/${userId}/actions/unban`);
+    const res = await firstValueFrom(
+      this.httpService.post<UserResponse>(`/users/${userId}/actions/unban`),
+    );
+    return res.data;
   }
 
+  /** 更换用户所属组 */
   async changeGroup(userId: string, groupId: string | null): Promise<void> {
     const body = { data: groupId ? { type: 'groups', id: groupId } : null };
-    return this.http.put(`/users/${userId}/group`, body);
+    await firstValueFrom(this.httpService.put(`/users/${userId}/group`, body));
   }
 }

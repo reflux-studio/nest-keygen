@@ -4,8 +4,9 @@ import {
   JsonApiSingleResponse,
   JsonApiListResponse,
   ListQueryParams,
-} from '../../interfaces/common.types';
+} from '../../keygen.types';
 
+/** License 属性 */
 export interface LicenseAttributes {
   key: string;
   name: string | null;
@@ -70,6 +71,7 @@ export interface UpdateLicenseData {
   metadata?: Record<string, any>;
 }
 
+/** 验证时的 scope，可限制 fingerprint/components 等 */
 export interface LicenseValidationScope {
   fingerprint?: string;
   fingerprints?: string[];
@@ -102,6 +104,7 @@ export type LicenseValidationResponse =
     meta: LicenseValidationAttributes;
   };
 
+/** check-out 参数，encrypt 加密 .lic 文件，ttl 秒 */
 export interface CheckOutLicenseParams {
   encrypt?: boolean;
   ttl?: number;

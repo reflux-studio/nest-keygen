@@ -1,5 +1,6 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { KeygenHttpService } from '../../common/keygen-http.service';
+import { firstValueFrom } from 'rxjs';
 import {
   EventLogResponse,
   EventLogListResponse,
@@ -8,13 +9,24 @@ import {
 
 @Injectable()
 export class EventLogsService {
-  constructor(private readonly http: KeygenHttpService) {}
+  constructor(private readonly httpService: HttpService) {}
 
+  /** 获取单条事件日志，需 event-log.read 权限 */
   async retrieve(eventId: string): Promise<EventLogResponse> {
-    return this.http.get<EventLogResponse>(`/event-logs/${eventId}`);
+    const res = await firstValueFrom(
+      this.httpService.get<EventLogResponse>(`/event-logs/${eventId}`),
+    );
+    return res.data;
   }
 
+  /** 列出事件日志，按创建时间倒序 */
   async list(params?: ListEventLogsParams): Promise<EventLogListResponse> {
-    return this.http.get<EventLogListResponse>('/event-logs', params);
+    const res = await firstValueFrom(
+      this.httpService.get<EventLogListResponse>(
+        '/event-logs',
+        params ? { params } : {},
+      ),
+    );
+    return res.data;
   }
 }

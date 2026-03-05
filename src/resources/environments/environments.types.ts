@@ -4,8 +4,9 @@ import {
   JsonApiSingleResponse,
   JsonApiListResponse,
   ListQueryParams,
-} from '../../interfaces/common.types';
+} from '../../keygen.types';
 
+/** 环境属性，用于隔离或共享资源（如 sandbox） */
 export interface EnvironmentAttributes {
   name: string;
   code: string;

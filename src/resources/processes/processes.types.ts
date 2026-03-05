@@ -4,8 +4,9 @@ import {
   JsonApiSingleResponse,
   JsonApiListResponse,
   ListQueryParams,
-} from '../../interfaces/common.types';
+} from '../../keygen.types';
 
+/** Process 属性，用于管理每台机器的并发实例数，需定期 ping */
 export interface ProcessAttributes {
   pid: string;
   status: 'ALIVE' | 'DEAD';

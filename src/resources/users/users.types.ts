@@ -4,8 +4,9 @@ import {
   JsonApiSingleResponse,
   JsonApiListResponse,
   ListQueryParams,
-} from '../../interfaces/common.types';
+} from '../../keygen.types';
 
+/** User 属性 */
 export interface UserAttributes {
   fullName: string | null;
   firstName: string | null;

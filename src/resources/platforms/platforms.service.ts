@@ -1,5 +1,6 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { KeygenHttpService } from '../../common/keygen-http.service';
+import { firstValueFrom } from 'rxjs';
 import {
   PlatformResponse,
   PlatformListResponse,
@@ -8,13 +9,24 @@ import {
 
 @Injectable()
 export class PlatformsService {
-  constructor(private readonly http: KeygenHttpService) {}
+  constructor(private readonly httpService: HttpService) {}
 
+  /** 获取平台详情 */
   async retrieve(platformId: string): Promise<PlatformResponse> {
-    return this.http.get<PlatformResponse>(`/platforms/${platformId}`);
+    const res = await firstValueFrom(
+      this.httpService.get<PlatformResponse>(`/platforms/${platformId}`),
+    );
+    return res.data;
   }
 
+  /** 列出所有平台，按创建时间倒序 */
   async list(params?: ListPlatformsParams): Promise<PlatformListResponse> {
-    return this.http.get<PlatformListResponse>('/platforms', params);
+    const res = await firstValueFrom(
+      this.httpService.get<PlatformListResponse>(
+        '/platforms',
+        params ? { params } : {},
+      ),
+    );
+    return res.data;
   }
 }

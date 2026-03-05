@@ -4,8 +4,9 @@ import {
   JsonApiSingleResponse,
   JsonApiListResponse,
   ListQueryParams,
-} from '../../interfaces/common.types';
+} from '../../keygen.types';
 
+/** Policy 属性，定义 license 行为：时长、机器数、验证策略、心跳等 */
 export interface PolicyAttributes {
   name: string;
   duration: number | null;

@@ -4,8 +4,9 @@ import {
   JsonApiSingleResponse,
   JsonApiListResponse,
   ListQueryParams,
-} from '../../interfaces/common.types';
+} from '../../keygen.types';
 
+/** 请求日志属性，记录每次 API 调用的请求/响应详情 */
 export interface RequestLogAttributes {
   url: string;
   method: string;

@@ -1,5 +1,6 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { KeygenHttpService } from '../../common/keygen-http.service';
+import { firstValueFrom } from 'rxjs';
 import {
   ComponentResponse,
   ComponentListResponse,
@@ -10,8 +11,9 @@ import {
 
 @Injectable()
 export class ComponentsService {
-  constructor(private readonly http: KeygenHttpService) {}
+  constructor(private readonly httpService: HttpService) {}
 
+  /** 添加组件到机器，POST /components */
   async add(data: AddComponentData): Promise<ComponentResponse> {
     const { machineId, ...attributes } = data;
     const body = {
@@ -23,29 +25,48 @@ export class ComponentsService {
         },
       },
     };
-    return this.http.post<ComponentResponse>('/components', body);
+    const res = await firstValueFrom(
+      this.httpService.post<ComponentResponse>('/components', body),
+    );
+    return res.data;
   }
 
+  /** 获取组件详情 */
   async retrieve(componentId: string): Promise<ComponentResponse> {
-    return this.http.get<ComponentResponse>(`/components/${componentId}`);
+    const res = await firstValueFrom(
+      this.httpService.get<ComponentResponse>(`/components/${componentId}`),
+    );
+    return res.data;
   }
 
+  /** 更新组件属性 */
   async update(
     componentId: string,
     data: UpdateComponentData,
   ): Promise<ComponentResponse> {
     const body = { data: { type: 'components', attributes: data } };
-    return this.http.patch<ComponentResponse>(
-      `/components/${componentId}`,
-      body,
+    const res = await firstValueFrom(
+      this.httpService.patch<ComponentResponse>(
+        `/components/${componentId}`,
+        body,
+      ),
     );
+    return res.data;
   }
 
+  /** 永久删除组件 */
   async remove(componentId: string): Promise<void> {
-    return this.http.delete(`/components/${componentId}`);
+    await firstValueFrom(this.httpService.delete(`/components/${componentId}`));
   }
 
+  /** 列出组件，支持 machine/license/product 过滤 */
   async list(params?: ListComponentsParams): Promise<ComponentListResponse> {
-    return this.http.get<ComponentListResponse>('/components', params);
+    const res = await firstValueFrom(
+      this.httpService.get<ComponentListResponse>(
+        '/components',
+        params ? { params } : {},
+      ),
+    );
+    return res.data;
   }
 }

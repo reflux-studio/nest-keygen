@@ -4,8 +4,9 @@ import {
   JsonApiSingleResponse,
   JsonApiListResponse,
   ListQueryParams,
-} from '../../interfaces/common.types';
+} from '../../keygen.types';
 
+/** Product 属性，代表软件应用，定义分发策略、平台、权限 */
 export interface ProductAttributes {
   name: string;
   code: string | null;

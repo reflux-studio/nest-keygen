@@ -4,8 +4,9 @@ import {
   JsonApiSingleResponse,
   JsonApiListResponse,
   ListQueryParams,
-} from '../../interfaces/common.types';
+} from '../../keygen.types';
 
+/** Webhook 事件属性，失败会重试最多 15 次 */
 export interface WebhookEventAttributes {
   event: string;
   payload: string;

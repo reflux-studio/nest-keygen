@@ -4,8 +4,9 @@ import {
   JsonApiSingleResponse,
   JsonApiListResponse,
   ListQueryParams,
-} from '../../interfaces/common.types';
+} from '../../keygen.types';
 
+/** Webhook 端点属性，subscriptions 如 ["*"] 或 ["license.created"] */
 export interface WebhookEndpointAttributes {
   url: string;
   subscriptions: string[];
