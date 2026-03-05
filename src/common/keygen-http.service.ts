@@ -91,11 +91,19 @@ export class KeygenHttpService {
     params?: Record<string, any>,
   ): Promise<string> {
     const url = this.buildUrl(path, params);
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: this.defaultHeaders,
-      redirect: 'manual',
-    });
+    let response: Response;
+    try {
+      response = await fetch(url, {
+        method: 'GET',
+        headers: this.defaultHeaders,
+        redirect: 'manual',
+      });
+    } catch {
+      throw new HttpException(
+        { errors: [{ detail: 'Network request failed' }] },
+        503,
+      );
+    }
 
     if (response.status >= 300 && response.status < 400) {
       return response.headers.get('location') ?? '';
@@ -106,7 +114,12 @@ export class KeygenHttpService {
   }
 
   async ping(): Promise<void> {
-    const response = await fetch(`${this.baseUrl}/v1/ping`);
+    let response: Response;
+    try {
+      response = await fetch(`${this.baseUrl}/v1/ping`);
+    } catch {
+      throw new HttpException('Keygen API unreachable', 503);
+    }
     if (!response.ok) {
       throw new HttpException('Keygen API unreachable', response.status);
     }
@@ -131,7 +144,15 @@ export class KeygenHttpService {
       init.body = JSON.stringify(body);
     }
 
-    const response = await fetch(url, init);
+    let response: Response;
+    try {
+      response = await fetch(url, init);
+    } catch {
+      throw new HttpException(
+        { errors: [{ detail: 'Network request failed' }] },
+        503,
+      );
+    }
 
     if (response.status === 204) {
       return undefined as T;
@@ -141,7 +162,12 @@ export class KeygenHttpService {
       return undefined as T;
     }
 
-    const data: unknown = await response.json();
+    let data: unknown;
+    try {
+      data = await response.json();
+    } catch {
+      data = {};
+    }
 
     if (!response.ok) {
       throw new HttpException(data as object, response.status);

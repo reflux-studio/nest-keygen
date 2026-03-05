@@ -22,7 +22,11 @@ describe('KeygenModule', () => {
     });
 
     it('sets global=true when isGlobal=true', () => {
-      const mod = KeygenModule.forRoot({ account: 'acc', token: 'tok', isGlobal: true });
+      const mod = KeygenModule.forRoot({
+        account: 'acc',
+        token: 'tok',
+        isGlobal: true,
+      });
       expect(mod.global).toBe(true);
     });
 
@@ -78,9 +82,7 @@ describe('KeygenModule', () => {
 
     it('instantiates KeygenService via Test module', async () => {
       const moduleRef = await Test.createTestingModule({
-        imports: [
-          KeygenModule.forRootAsync({ useClass: TestFactory }),
-        ],
+        imports: [KeygenModule.forRootAsync({ useClass: TestFactory })],
       }).compile();
       const service = moduleRef.get(KeygenService);
       expect(service).toBeDefined();
@@ -88,9 +90,7 @@ describe('KeygenModule', () => {
 
     it('uses factory class to create options', async () => {
       const moduleRef = await Test.createTestingModule({
-        imports: [
-          KeygenModule.forRootAsync({ useClass: TestFactory }),
-        ],
+        imports: [KeygenModule.forRootAsync({ useClass: TestFactory })],
       }).compile();
       const opts = moduleRef.get(KEYGEN_OPTIONS);
       expect(opts.account).toBe('class-acc');
@@ -121,6 +121,16 @@ describe('KeygenModule', () => {
       }).compile();
       const opts = moduleRef.get(KEYGEN_OPTIONS);
       expect(opts.account).toBe('existing-acc');
+    });
+  });
+
+  describe('forRootAsync - invalid options', () => {
+    it('fails to compile when no async provider strategy is provided', async () => {
+      await expect(
+        Test.createTestingModule({
+          imports: [KeygenModule.forRootAsync({} as any)],
+        }).compile(),
+      ).rejects.toThrow();
     });
   });
 });

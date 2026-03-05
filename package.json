@@ -1,6 +1,6 @@
 {
   "name": "nest-keygen",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "NestJS bindings for the Keygen API",
   "author": "XavierSue",
   "license": "MIT",
@@ -37,6 +37,7 @@
     "@changesets/cli": "^2.30.0",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
+    "@nestjs/axios": "^4.0.1",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
@@ -47,6 +48,7 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^22.10.7",
     "@types/supertest": "^6.0.2",
+    "axios": "^1.13.6",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",

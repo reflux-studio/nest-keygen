@@ -75,6 +75,9 @@ describe('PoliciesService', () => {
   it('listEntitlements calls GET /policies/:id/entitlements', async () => {
     http.get.mockResolvedValue({ data: [] });
     await service.listEntitlements('pol-1');
-    expect(http.get).toHaveBeenCalledWith('/policies/pol-1/entitlements', undefined);
+    expect(http.get).toHaveBeenCalledWith(
+      '/policies/pol-1/entitlements',
+      undefined,
+    );
   });
 });

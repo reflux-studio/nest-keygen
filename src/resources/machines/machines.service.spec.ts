@@ -23,7 +23,11 @@ describe('MachinesService', () => {
 
   it('activate includes owner relationship when ownerId provided', async () => {
     http.post.mockResolvedValue({ data: {} });
-    await service.activate({ licenseId: 'lic-1', ownerId: 'usr-1', fingerprint: 'fp-1' } as any);
+    await service.activate({
+      licenseId: 'lic-1',
+      ownerId: 'usr-1',
+      fingerprint: 'fp-1',
+    } as any);
     const body = (http.post.mock.calls[0] as any[])[1];
     expect(body.data.relationships.owner).toEqual({
       data: { type: 'users', id: 'usr-1' },
@@ -32,7 +36,11 @@ describe('MachinesService', () => {
 
   it('activate includes group relationship when groupId provided', async () => {
     http.post.mockResolvedValue({ data: {} });
-    await service.activate({ licenseId: 'lic-1', groupId: 'grp-1', fingerprint: 'fp-1' } as any);
+    await service.activate({
+      licenseId: 'lic-1',
+      groupId: 'grp-1',
+      fingerprint: 'fp-1',
+    } as any);
     const body = (http.post.mock.calls[0] as any[])[1];
     expect(body.data.relationships.group).toEqual({
       data: { type: 'groups', id: 'grp-1' },
@@ -68,7 +76,10 @@ describe('MachinesService', () => {
   it('checkOut calls POST /machines/:id/actions/check-out', async () => {
     http.post.mockResolvedValue({ data: {} });
     await service.checkOut('mac-1', { ttl: 60 } as any);
-    expect(http.post).toHaveBeenCalledWith('/machines/mac-1/actions/check-out', { ttl: 60 });
+    expect(http.post).toHaveBeenCalledWith(
+      '/machines/mac-1/actions/check-out',
+      { ttl: 60 },
+    );
   });
 
   it('ping calls POST /machines/:id/actions/ping', async () => {
@@ -102,6 +113,8 @@ describe('MachinesService', () => {
   it('changeGroup with null calls PUT with null data', async () => {
     http.put.mockResolvedValue(undefined);
     await service.changeGroup('mac-1', null);
-    expect(http.put).toHaveBeenCalledWith('/machines/mac-1/group', { data: null });
+    expect(http.put).toHaveBeenCalledWith('/machines/mac-1/group', {
+      data: null,
+    });
   });
 });

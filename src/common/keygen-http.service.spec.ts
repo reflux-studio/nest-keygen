@@ -31,39 +31,65 @@ describe('KeygenHttpService', () => {
   describe('constructor / headers', () => {
     it('sets Bearer auth when token provided', async () => {
       fetchMock.mockResolvedValue(makeResponse(200, { data: {} }));
-      const svc = new KeygenHttpService({ account: 'acc', token: 'tok' } as any);
+      const svc = new KeygenHttpService({
+        account: 'acc',
+        token: 'tok',
+      } as any);
       await svc.get('/test');
       const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-      expect((init.headers as Record<string, string>)['Authorization']).toBe('Bearer tok');
+      expect((init.headers as Record<string, string>)['Authorization']).toBe(
+        'Bearer tok',
+      );
     });
 
     it('sets License auth when licenseKey provided', async () => {
       fetchMock.mockResolvedValue(makeResponse(200, { data: {} }));
-      const svc = new KeygenHttpService({ account: 'acc', licenseKey: 'lk' } as any);
+      const svc = new KeygenHttpService({
+        account: 'acc',
+        licenseKey: 'lk',
+      } as any);
       await svc.get('/test');
       const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-      expect((init.headers as Record<string, string>)['Authorization']).toBe('License lk');
+      expect((init.headers as Record<string, string>)['Authorization']).toBe(
+        'License lk',
+      );
     });
 
     it('sets Keygen-Version header when apiVersion provided', async () => {
       fetchMock.mockResolvedValue(makeResponse(200, {}));
-      const svc = new KeygenHttpService({ account: 'acc', token: 'tok', apiVersion: '1.5' } as any);
+      const svc = new KeygenHttpService({
+        account: 'acc',
+        token: 'tok',
+        apiVersion: '1.5',
+      } as any);
       await svc.get('/test');
       const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-      expect((init.headers as Record<string, string>)['Keygen-Version']).toBe('1.5');
+      expect((init.headers as Record<string, string>)['Keygen-Version']).toBe(
+        '1.5',
+      );
     });
 
     it('sets Keygen-Environment header when environment provided', async () => {
       fetchMock.mockResolvedValue(makeResponse(200, {}));
-      const svc = new KeygenHttpService({ account: 'acc', token: 'tok', environment: 'sandbox' } as any);
+      const svc = new KeygenHttpService({
+        account: 'acc',
+        token: 'tok',
+        environment: 'sandbox',
+      } as any);
       await svc.get('/test');
       const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-      expect((init.headers as Record<string, string>)['Keygen-Environment']).toBe('sandbox');
+      expect(
+        (init.headers as Record<string, string>)['Keygen-Environment'],
+      ).toBe('sandbox');
     });
 
     it('uses custom baseUrl when provided', async () => {
       fetchMock.mockResolvedValue(makeResponse(200, {}));
-      const svc = new KeygenHttpService({ account: 'acc', token: 'tok', baseUrl: 'https://custom.api' } as any);
+      const svc = new KeygenHttpService({
+        account: 'acc',
+        token: 'tok',
+        baseUrl: 'https://custom.api',
+      } as any);
       await svc.get('/test');
       const [url] = fetchMock.mock.calls[0] as [string, RequestInit];
       expect(url).toContain('https://custom.api');
@@ -71,7 +97,10 @@ describe('KeygenHttpService', () => {
 
     it('defaults to https://api.keygen.sh when baseUrl not provided', async () => {
       fetchMock.mockResolvedValue(makeResponse(200, {}));
-      const svc = new KeygenHttpService({ account: 'acc', token: 'tok' } as any);
+      const svc = new KeygenHttpService({
+        account: 'acc',
+        token: 'tok',
+      } as any);
       await svc.get('/test');
       const [url] = fetchMock.mock.calls[0] as [string, RequestInit];
       expect(url).toContain('https://api.keygen.sh');
@@ -81,7 +110,10 @@ describe('KeygenHttpService', () => {
   describe('buildUrl / query params', () => {
     it('builds correct url with account', async () => {
       fetchMock.mockResolvedValue(makeResponse(200, {}));
-      const svc = new KeygenHttpService({ account: 'my-account', token: 'tok' } as any);
+      const svc = new KeygenHttpService({
+        account: 'my-account',
+        token: 'tok',
+      } as any);
       await svc.get('/licenses');
       const [url] = fetchMock.mock.calls[0] as [string, RequestInit];
       expect(url).toContain('/v1/accounts/my-account/licenses');
@@ -89,7 +121,10 @@ describe('KeygenHttpService', () => {
 
     it('appends flat query params', async () => {
       fetchMock.mockResolvedValue(makeResponse(200, {}));
-      const svc = new KeygenHttpService({ account: 'acc', token: 'tok' } as any);
+      const svc = new KeygenHttpService({
+        account: 'acc',
+        token: 'tok',
+      } as any);
       await svc.get('/licenses', { limit: 10, page: 2 });
       const [url] = fetchMock.mock.calls[0] as [string, RequestInit];
       expect(url).toContain('limit=10');
@@ -98,7 +133,10 @@ describe('KeygenHttpService', () => {
 
     it('appends nested query params with bracket notation', async () => {
       fetchMock.mockResolvedValue(makeResponse(200, {}));
-      const svc = new KeygenHttpService({ account: 'acc', token: 'tok' } as any);
+      const svc = new KeygenHttpService({
+        account: 'acc',
+        token: 'tok',
+      } as any);
       await svc.get('/licenses', { filter: { status: 'active' } });
       const [url] = fetchMock.mock.calls[0] as [string, RequestInit];
       expect(url).toContain('filter%5Bstatus%5D=active');
@@ -106,7 +144,10 @@ describe('KeygenHttpService', () => {
 
     it('skips null/undefined params', async () => {
       fetchMock.mockResolvedValue(makeResponse(200, {}));
-      const svc = new KeygenHttpService({ account: 'acc', token: 'tok' } as any);
+      const svc = new KeygenHttpService({
+        account: 'acc',
+        token: 'tok',
+      } as any);
       await svc.get('/licenses', { limit: null, page: undefined });
       const [url] = fetchMock.mock.calls[0] as [string, RequestInit];
       expect(url).not.toContain('limit');
@@ -142,7 +183,9 @@ describe('KeygenHttpService', () => {
       fetchMock.mockResolvedValue(makeResponse(200, {}));
       await svc.post('/path', undefined, undefined, 'Basic xyz');
       const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-      expect((init.headers as Record<string, string>)['Authorization']).toBe('Basic xyz');
+      expect((init.headers as Record<string, string>)['Authorization']).toBe(
+        'Basic xyz',
+      );
     });
 
     it('patch calls fetch with PATCH and body', async () => {
@@ -203,6 +246,21 @@ describe('KeygenHttpService', () => {
       await expect(svc.get('/path')).rejects.toBeInstanceOf(HttpException);
     });
 
+    it('throws HttpException when fetch rejects', async () => {
+      fetchMock.mockRejectedValue(new Error('network down'));
+      await expect(svc.get('/path')).rejects.toBeInstanceOf(HttpException);
+    });
+
+    it('returns empty object on 2xx when json parsing fails', async () => {
+      fetchMock.mockResolvedValue({
+        status: 200,
+        ok: true,
+        json: jest.fn().mockRejectedValue(new Error('invalid json')),
+        headers: { get: () => null },
+      } as unknown as Response);
+      await expect(svc.get('/path')).resolves.toEqual({});
+    });
+
     it('HttpException has correct status code', async () => {
       fetchMock.mockResolvedValue(makeResponse(422, { errors: [] }));
       try {
@@ -224,7 +282,10 @@ describe('KeygenHttpService', () => {
       const res = {
         status: 302,
         ok: false,
-        headers: { get: (k: string) => (k === 'location' ? 'https://s3.example.com/file' : null) },
+        headers: {
+          get: (k: string) =>
+            k === 'location' ? 'https://s3.example.com/file' : null,
+        },
         json: jest.fn(),
       } as unknown as Response;
       fetchMock.mockResolvedValue(res);
@@ -252,7 +313,16 @@ describe('KeygenHttpService', () => {
         json: jest.fn().mockResolvedValue({ errors: [] }),
       } as unknown as Response;
       fetchMock.mockResolvedValue(res);
-      await expect(svc.getRedirectUrl('/artifacts/bad')).rejects.toBeInstanceOf(HttpException);
+      await expect(svc.getRedirectUrl('/artifacts/bad')).rejects.toBeInstanceOf(
+        HttpException,
+      );
+    });
+
+    it('throws HttpException when redirect request fails', async () => {
+      fetchMock.mockRejectedValue(new Error('network down'));
+      await expect(svc.getRedirectUrl('/path')).rejects.toBeInstanceOf(
+        HttpException,
+      );
     });
 
     it('uses redirect: manual option', async () => {
@@ -285,6 +355,11 @@ describe('KeygenHttpService', () => {
 
     it('throws HttpException when ping fails', async () => {
       fetchMock.mockResolvedValue({ ok: false, status: 503 } as Response);
+      await expect(svc.ping()).rejects.toBeInstanceOf(HttpException);
+    });
+
+    it('throws HttpException when ping fetch rejects', async () => {
+      fetchMock.mockRejectedValue(new Error('network down'));
       await expect(svc.ping()).rejects.toBeInstanceOf(HttpException);
     });
   });

@@ -55,9 +55,15 @@ describe('UsersService', () => {
 
   it('updatePassword calls PUT /users/:id/password', async () => {
     http.put.mockResolvedValue(undefined);
-    await service.updatePassword('usr-1', { oldPassword: 'old', newPassword: 'new' } as any);
+    await service.updatePassword('usr-1', {
+      oldPassword: 'old',
+      newPassword: 'new',
+    } as any);
     expect(http.put).toHaveBeenCalledWith('/users/usr-1/password', {
-      data: { type: 'users', attributes: { oldPassword: 'old', newPassword: 'new' } },
+      data: {
+        type: 'users',
+        attributes: { oldPassword: 'old', newPassword: 'new' },
+      },
     });
   });
 

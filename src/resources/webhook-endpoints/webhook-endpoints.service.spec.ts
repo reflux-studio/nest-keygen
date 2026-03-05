@@ -23,7 +23,10 @@ describe('WebhookEndpointsService', () => {
 
   it('create with productId includes product relationship', async () => {
     http.post.mockResolvedValue({ data: {} });
-    await service.create({ url: 'https://example.com/hook', productId: 'prod-1' } as any);
+    await service.create({
+      url: 'https://example.com/hook',
+      productId: 'prod-1',
+    } as any);
     const call = http.post.mock.calls[0] as any[];
     expect(call[1].data.relationships).toEqual({
       product: { data: { type: 'products', id: 'prod-1' } },
@@ -40,7 +43,10 @@ describe('WebhookEndpointsService', () => {
     http.patch.mockResolvedValue({ data: {} });
     await service.update('ep-1', { url: 'https://new.url' } as any);
     expect(http.patch).toHaveBeenCalledWith('/webhook-endpoints/ep-1', {
-      data: { type: 'webhook-endpoints', attributes: { url: 'https://new.url' } },
+      data: {
+        type: 'webhook-endpoints',
+        attributes: { url: 'https://new.url' },
+      },
     });
   });
 

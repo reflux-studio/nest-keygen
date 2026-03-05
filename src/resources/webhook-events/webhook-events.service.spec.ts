@@ -31,6 +31,8 @@ describe('WebhookEventsService', () => {
   it('retry calls POST /webhook-events/:id/actions/retry', async () => {
     http.post.mockResolvedValue({ data: {} });
     await service.retry('evt-1');
-    expect(http.post).toHaveBeenCalledWith('/webhook-events/evt-1/actions/retry');
+    expect(http.post).toHaveBeenCalledWith(
+      '/webhook-events/evt-1/actions/retry',
+    );
   });
 });

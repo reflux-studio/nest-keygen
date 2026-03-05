@@ -23,7 +23,11 @@ describe('ReleasesService', () => {
 
   it('create includes package relationship when packageId provided', async () => {
     http.post.mockResolvedValue({ data: {} });
-    await service.create({ productId: 'prod-1', packageId: 'pkg-1', version: '1.0.0' } as any);
+    await service.create({
+      productId: 'prod-1',
+      packageId: 'pkg-1',
+      version: '1.0.0',
+    } as any);
     const body = (http.post.mock.calls[0] as any[])[1];
     expect(body.data.relationships['package']).toEqual({
       data: { type: 'packages', id: 'pkg-1' },
@@ -76,16 +80,22 @@ describe('ReleasesService', () => {
 
   it('attachConstraints calls POST with entitlement constraint bodies', async () => {
     http.post.mockResolvedValue(undefined);
-    await service.attachConstraints('rel-1', { entitlementIds: ['ent-1', 'ent-2'] });
+    await service.attachConstraints('rel-1', {
+      entitlementIds: ['ent-1', 'ent-2'],
+    });
     expect(http.post).toHaveBeenCalledWith('/releases/rel-1/constraints', {
       data: [
         {
           type: 'constraints',
-          relationships: { entitlement: { data: { type: 'entitlements', id: 'ent-1' } } },
+          relationships: {
+            entitlement: { data: { type: 'entitlements', id: 'ent-1' } },
+          },
         },
         {
           type: 'constraints',
-          relationships: { entitlement: { data: { type: 'entitlements', id: 'ent-2' } } },
+          relationships: {
+            entitlement: { data: { type: 'entitlements', id: 'ent-2' } },
+          },
         },
       ],
     });
@@ -102,13 +112,19 @@ describe('ReleasesService', () => {
   it('listConstraints calls GET /releases/:id/constraints', async () => {
     http.get.mockResolvedValue({ data: [] });
     await service.listConstraints('rel-1');
-    expect(http.get).toHaveBeenCalledWith('/releases/rel-1/constraints', undefined);
+    expect(http.get).toHaveBeenCalledWith(
+      '/releases/rel-1/constraints',
+      undefined,
+    );
   });
 
   it('listArtifacts calls GET /releases/:id/artifacts', async () => {
     http.get.mockResolvedValue({ data: [] });
     await service.listArtifacts('rel-1');
-    expect(http.get).toHaveBeenCalledWith('/releases/rel-1/artifacts', undefined);
+    expect(http.get).toHaveBeenCalledWith(
+      '/releases/rel-1/artifacts',
+      undefined,
+    );
   });
 
   it('changePackage with packageId calls PUT with package data', async () => {
@@ -122,6 +138,8 @@ describe('ReleasesService', () => {
   it('changePackage with null calls PUT with null data', async () => {
     http.put.mockResolvedValue(undefined);
     await service.changePackage('rel-1', null);
-    expect(http.put).toHaveBeenCalledWith('/releases/rel-1/package', { data: null });
+    expect(http.put).toHaveBeenCalledWith('/releases/rel-1/package', {
+      data: null,
+    });
   });
 });

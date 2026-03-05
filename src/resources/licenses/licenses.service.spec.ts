@@ -68,25 +68,26 @@ describe('LicensesService', () => {
   it('validate calls POST with meta body', async () => {
     http.post.mockResolvedValue({ data: {} });
     await service.validate('lic-1', { nonce: 'abc' } as any);
-    expect(http.post).toHaveBeenCalledWith(
-      '/licenses/lic-1/actions/validate',
-      { meta: { nonce: 'abc' } },
-    );
+    expect(http.post).toHaveBeenCalledWith('/licenses/lic-1/actions/validate', {
+      meta: { nonce: 'abc' },
+    });
   });
 
   it('validate without meta passes undefined body', async () => {
     http.post.mockResolvedValue({ data: {} });
     await service.validate('lic-1');
-    expect(http.post).toHaveBeenCalledWith('/licenses/lic-1/actions/validate', undefined);
+    expect(http.post).toHaveBeenCalledWith(
+      '/licenses/lic-1/actions/validate',
+      undefined,
+    );
   });
 
   it('validateKey calls POST with key in meta', async () => {
     http.post.mockResolvedValue({ data: {} });
     await service.validateKey('KEY-123', { nonce: 'n1' } as any);
-    expect(http.post).toHaveBeenCalledWith(
-      '/licenses/actions/validate-key',
-      { meta: { key: 'KEY-123', nonce: 'n1' } },
-    );
+    expect(http.post).toHaveBeenCalledWith('/licenses/actions/validate-key', {
+      meta: { key: 'KEY-123', nonce: 'n1' },
+    });
   });
 
   it('suspend calls POST /licenses/:id/actions/suspend', async () => {
@@ -144,7 +145,10 @@ describe('LicensesService', () => {
   it('listEntitlements calls GET /licenses/:id/entitlements', async () => {
     http.get.mockResolvedValue({ data: [] });
     await service.listEntitlements('lic-1');
-    expect(http.get).toHaveBeenCalledWith('/licenses/lic-1/entitlements', undefined);
+    expect(http.get).toHaveBeenCalledWith(
+      '/licenses/lic-1/entitlements',
+      undefined,
+    );
   });
 
   it('changeOwner calls PUT /licenses/:id/owner', async () => {
@@ -174,6 +178,8 @@ describe('LicensesService', () => {
   it('changeGroup with null calls PUT with null data', async () => {
     http.put.mockResolvedValue(undefined);
     await service.changeGroup('lic-1', null);
-    expect(http.put).toHaveBeenCalledWith('/licenses/lic-1/group', { data: null });
+    expect(http.put).toHaveBeenCalledWith('/licenses/lic-1/group', {
+      data: null,
+    });
   });
 });

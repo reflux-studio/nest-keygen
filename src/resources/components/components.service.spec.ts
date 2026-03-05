@@ -12,7 +12,11 @@ describe('ComponentsService', () => {
 
   it('add builds correct body with machine relationship', async () => {
     http.post.mockResolvedValue({ data: {} });
-    await service.add({ machineId: 'mac-1', fingerprint: 'fp-1', name: 'GPU' } as any);
+    await service.add({
+      machineId: 'mac-1',
+      fingerprint: 'fp-1',
+      name: 'GPU',
+    } as any);
     expect(http.post).toHaveBeenCalledWith('/components', {
       data: {
         type: 'components',

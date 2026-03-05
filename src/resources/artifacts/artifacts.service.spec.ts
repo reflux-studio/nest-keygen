@@ -15,7 +15,10 @@ describe('ArtifactsService', () => {
     http.post.mockResolvedValue(artifact);
     http.getRedirectUrl.mockResolvedValue('https://s3.example.com/upload');
 
-    const result = await service.upload({ releaseId: 'rel-1', filename: 'app.zip' } as any);
+    const result = await service.upload({
+      releaseId: 'rel-1',
+      filename: 'app.zip',
+    } as any);
 
     expect(http.post).toHaveBeenCalledWith('/artifacts', {
       data: {
@@ -27,7 +30,10 @@ describe('ArtifactsService', () => {
       },
     });
     expect(http.getRedirectUrl).toHaveBeenCalledWith('/artifacts/art-1');
-    expect(result).toEqual({ artifact, uploadUrl: 'https://s3.example.com/upload' });
+    expect(result).toEqual({
+      artifact,
+      uploadUrl: 'https://s3.example.com/upload',
+    });
   });
 
   it('getDownloadUrl calls getRedirectUrl', async () => {

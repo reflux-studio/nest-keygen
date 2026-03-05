@@ -14,7 +14,12 @@ describe('TokensService', () => {
     http.post.mockResolvedValue({ data: {} });
     await service.generate({ email: 'user@example.com', password: 'secret' });
     const expectedAuth = `Basic ${Buffer.from('user@example.com:secret').toString('base64')}`;
-    expect(http.post).toHaveBeenCalledWith('/tokens', undefined, undefined, expectedAuth);
+    expect(http.post).toHaveBeenCalledWith(
+      '/tokens',
+      undefined,
+      undefined,
+      expectedAuth,
+    );
   });
 
   it('list calls GET /tokens', async () => {
