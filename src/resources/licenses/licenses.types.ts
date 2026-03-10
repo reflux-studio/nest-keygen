@@ -125,4 +125,5 @@ export interface ListLicensesParams extends ListQueryParams {
   user?: string;
   group?: string;
   status?: string;
+  metadata?: Record<string, string | number | boolean>;
 }

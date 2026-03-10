@@ -72,4 +72,5 @@ export interface ListMachinesParams extends ListQueryParams {
   user?: string;
   group?: string;
   fingerprint?: string;
+  metadata?: Record<string, string | number | boolean>;
 }

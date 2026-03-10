@@ -1,6 +1,6 @@
 {
   "name": "nest-keygen",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "NestJS bindings for the Keygen API",
   "author": "XavierSue",
   "license": "MIT",

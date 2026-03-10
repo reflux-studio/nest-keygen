@@ -64,4 +64,5 @@ export interface ListUsersParams extends ListQueryParams {
   product?: string;
   group?: string;
   status?: string;
+  metadata?: Record<string, string | number | boolean>;
 }
