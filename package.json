@@ -13,7 +13,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/xav1er/nest-keygen.git"
+    "url": "https://github.com/reflux-studio/nest-keygen.git"
   },
   "scripts": {
     "build": "nest build",

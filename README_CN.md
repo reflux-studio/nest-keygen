@@ -28,8 +28,6 @@ npm install nest-keygen
 yarn add nest-keygen
 ```
 
-> **要求** Node.js ≥ 18（使用原生 `fetch` API）以及 NestJS ≥ 10。
-
 ## 快速上手
 
 ### 1. 注册模块

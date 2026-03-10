@@ -28,8 +28,6 @@ npm install nest-keygen
 yarn add nest-keygen
 ```
 
-> **Requires** Node.js ≥ 18 (uses the native `fetch` API) and NestJS ≥ 10.
-
 ## Quick Start
 
 ### 1. Register the module
